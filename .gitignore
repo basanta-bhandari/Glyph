@@ -4,12 +4,16 @@ pydos_file_contents.json
 /dist
 /saved
 *.png
-*.json
 Done
 pydos_filesystem.json
 MANIFEST.in
 Py_DOS_B1.egg-info
 /testenv
 /outenv
-*.sh
+/target/
+/.glyph/
 
+
+!assets/human/figures/*.png
+
+**/__pycache__/

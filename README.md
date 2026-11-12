@@ -1,243 +1,59 @@
-```
-                            ██████╗ ██╗   ██╗    ██████╗  ██████╗ ███████╗
-                            ██╔══██╗╚██╗ ██╔╝    ██╔══██╗██╔═══██╗██╔════╝
-                            ██████╔╝ ╚████╔╝     ██║  ██║██║   ██║███████╗
-                            ██╔═══╝   ╚██╔╝      ██║  ██║██║   ██║╚════██║
-                            ██║        ██║       ██████╔╝╚██████╔╝███████║
-                            ╚═╝        ╚═╝       ╚═════╝  ╚═════╝ ╚══════╝
-```
+# Glyph · 0.3.0-alpha.1
 
-A DOS-style terminal simulator built entirely in Python. Implements a virtual filesystem with file and directory management, a built-in package manager, system information display, and support for creating and running Python scripts from within the environment(Linux + MacOS only).
+A cozy terminal workspace for files, tools, games, CAD, agents, and a graphical web browser. Rust at the core, Lua for customization, ordinary application files underneath. The Python Pydos implementation is preserved in `legacy/python`; the Rust runtime does not load Rubus.
 
-[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
-
-## Features
-
-- Virtual filesystem with persistent state across sessions
-- Create, edit, view, copy, move, and rename text and executable files
-- Directory navigation and management (`cd`, `cd ..`, `/`)
-- Run Python scripts from within the virtual filesystem
-- Live clock display in the terminal
-- Battery status and file encryption inside simulator
-- Built-in pip package manager (`install` / `uninstall`)
-- Command history (last 10 commands) saved and restored between sessions
-- **Command pipelining** with pipe operators (`|`)
-- **Conditional execution** with `&&` operator (run next command only if previous succeeds)
-- **Output redirection** (`>`, `>>`, `2>`, `2>&1`, `&>`)
-- **Input redirection** (`<`)
-- **Variable expansion** with `$VAR` and `${VAR}` syntax
-- **Exit code support** via `$?` special variable
-- **Glob pattern expansion** (`*`, `?`, `[...]`)
-- **Echo command** for printing text with variable substitution
-- **Help system** with detailed command documentation
-
-## Built-in Applications
-
-### Lantern 
-A peer-to-peer mesh chat application for PyDOS.
-- Host or join mesh chat rooms
-- Yggdrasil IPv6 mesh network support
-- Real-time messaging with other PyDOS instances
-- Commands: `run setup` for mesh network setup, `run community` to host or join chat
-
-### Lynx
-A text-based web browser integrated into PyDOS.
-- Browse URLs directly from the terminal
-- Automatic lynx installation with OS detection (apt, pacman, dnf, brew, zypper)
-- Fallback manual installation instructions for unsupported systems
-- Cross-platform support: Windows, macOS, Linux
-- Commands: `run web [url]` to launch
-
-### RubOS (Rubus Engine)
-A BASIC-inspired CLI language for creating custom applications within PyDOS.
-
-**Features:**
-- Variables and arrays: `let x = 5`, `let arr = [1, 2, 3]`
-- Input/output: `println`, `ask`, `read_file`, `write_file`
-- Control flow: `if/elif/else`, `while`, `loop`, `for`
-- Functions: `def greet(name) ... return ... end`
-- List operations: `append arr "item"`, `menu ["Yes", "No"]`
-- File operations: `read_file "file.txt"`, `write_file "out.txt" content`
-- Utilities: `clear`, `pause`, `color`, `exit`, `list_dir`
-- Comments with `#`
-
-**Creating Custom Apps:**
-- `create -cli <appname>` - Create a new RubOS application
-- Edit the generated `main.rub` file
-- Run the app by typing its name
-- Check app status with `state <appname>`
-
-**Example:**
-```bash
-create -cli mygame
-cd /home/user/apps/mygame
-edit main.rub
-mygame
-```
-
-## Quick Start (No Installation Required)
-
-If you have Python 3.7+ already installed, you can run PyDOS directly without installing pip:
+This alpha targets **Linux x86-64** with FUSE3, Bubblewrap, and Kitty. The storage image is a real mounted filesystem, not a pretend path namespace or a whole-disk expanded cache.
 
 ```bash
-cd /path/to/PY_DOS
-PYTHONPATH=src python -m pydos
+./start.sh                  # packaged build, dedicated Glyph Kitty instance
+./start.sh --root ./my-glyph # portable disk and bootstrap profile
 ```
 
-Or if you have the dependencies installed:
-```bash
-PYTHONPATH=src python3 -m pydos
-```
-
-## Installation
-
-### Prerequisites
-
-- Python 3.7 or higher
-- pip/pipx (optional - only needed if you want to install as a package)
-
-### Installing pip (if not already installed)
-
-**Linux:**
-```bash
-# Debian/Ubuntu
-sudo apt update && sudo apt install python3-pip
-
-# Fedora/RHEL
-sudo dnf install python3-pip
-
-# Arch
-sudo pacman -S python-pip
-
-# Alpine
-sudo apk add py3-pip
-```
-
-**macOS:**
-```bash
-# With Homebrew
-brew install python3
-
-# Python 3 comes with pip by default
-```
-
-**Windows:**
-```powershell
-# Download from https://www.python.org/downloads/
-# Python 3.7+ includes pip by default
-```
-
-### Installing pipx (recommended)
-
-**Windows:**
-```powershell
-python -m pip install --user pipx
-python -m pipx ensurepath
-```
-Restart your terminal after running these.
-
-**macOS:**
-```bash
-brew install pipx
-```
-Or without Homebrew:
-```bash
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
-```
-
-**Linux (Ubuntu/Debian):**
-```bash
-sudo apt update && sudo apt install pipx
-```
-
-**Linux (other distros):**
-```bash
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
-```
-
-### Installing PyDOS
-
-**Using pipx (recommended):**
-```bash
-pipx install Py-DOS-B1
-```
-
-**Using pip:**
-```bash
-pip install Py-DOS-B1
-```
-
-**Running locally:**
-```bash
-git clone https://github.com/basanta-bhandari/PY_DOS
-cd PY_DOS
-pip install -r requirements.txt
-PYTHONPATH=src python -m pydos
-```
-
-**Development install (editable mode):**
-```bash
-git clone https://github.com/basanta-bhandari/PY_DOS
-cd PY_DOS
-pip install -r requirements.txt
-pip install -e .
-boot
-```
-
-On some systems a virtual environment is required first:
-```bash
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-PYTHONPATH=src python -m pydos
-```
-
-**OS-Specific Package Manager Detection:**
-When running Lynx, PyDOS automatically detects your system's package manager and attempts to install it:
-- **Linux**: apt, apt-get (Debian/Ubuntu), pacman (Arch), dnf (Fedora/RHEL), zypper (openSUSE), apk (Alpine)
-- **macOS**: brew (Homebrew)
-- **Windows**: Provides manual installation instructions
-- **Fallback**: Detailed manual installation instructions if automatic detection fails
-
-### Running PyDOS
+Build from source with Rust 1.88+, a C compiler, FUSE3/fusermount3, and Bubblewrap:
 
 ```bash
-boot
+cargo build --release --locked --bins
+python3 tools/package.py
+./start.sh
 ```
 
-## Commands
+The browser also needs Chromium or Google Chrome installed as a read-only runtime. `tools/package.py --kat /path/to/forgetui` includes an existing Kat build; the supplied local alpha includes it. Packaging builds Pytris and Terminal Spiel `.app` zipapps from the included original game sources. Python 3 runs these apps; Glyph itself is Rust. No agent CLI is bundled or preinstalled.
 
-All directory, file & system commands can be viewed through the 'help' command.
+```text
+/AGENTS.md                 default agent guide (read-only to apps)
+/configs/init.lua          colors, bindings, commands
+/configs/packages.lua      install/remove/upgrade backend and {[pkg}] templates
+/configs/editor.lua        Neovim/NvChad default; Nano, Vim, Vis, Emacs alternatives
+/configs/links/            explicit host files/directories and permissions
+/configs/apps/             app kinds, runtime handlers, network/sandbox policy
+/configs/agents/           agent registrations, created after installation
+/configs/user/             independent copies of supported host rice
+/apps/*.app                application FILES, never directory bundles
+/home/                     your persistent files
+/system/source/            inspect, edit, and rebuild Glyph
+/system/docs/              human guides and Kitty graphics
+```
 
-### Package Manager
+Inside Glyph, `help` lists commands. Try `apps`, `run pytris`, `run kat`, `run browser`, `edit /home/notes.md`, `store`, and `guide`. Ctrl+Space opens the launcher. The catalog imports Zenith's 100-tool metadata and capability aliases, with search and explicit installation previews. It does not install the entire catalog.
 
-`install <package>` ------> Installs a Python package via pip  
-`uninstall <package>` ---> Uninstalls a Python package via pip  
-`packages` -----------> Lists all installed packages 
+`agent install opencode` installs the package **inside Glyph's sandbox**, then adds `/apps/opencode.app` and `/configs/agents/opencode.lua` after success. Codex uses the same flow. Host authentication state is never copied. The default local package helper currently provides official Linux x86-64 binary recipes for these two CLIs. Choose another backend in Lua for other packages. Pacman, apt, brew, WinGet, and custom examples use the exact `{[pkg}]` placeholder, passed as one argument without shell evaluation.
 
-## Editor
+Apps are confined by default using Bubblewrap. Child processes inherit the boundary. Agents cannot change running policy, approve host execution, alter installed app files, or activate runtimes. Explicit host-mode apps require a human to type `allow host` at every launch. nmtui, impala, and bluetui deliberately use that mode to operate real host services; setup never changes network connections or enables daemons.
 
-Text and executable files open in **nvim** on macOS/Linux and **Notepad** on Windows. When using nvim:
-- `i` -> enter insert mode
-- `Esc` -> exit insert mode
-- `:wq` -> save and exit
-- `:q!` -> exit without saving
+First setup **copies** supported host rice into Glyph without overwriting later Glyph edits. A dedicated Kitty instance loads Glyph's copied config. `wallpaper` uses Zenith's category index and downloads only your selected image; controls target that Kitty instance rather than your desktop or other terminals. `reload` applies valid Lua edits to the running TUI.
 
-## Troubleshooting
+Managed data lives in `workspace.glyphdisk`: a SQLite-backed FUSE filesystem with compressed chunks, optional authenticated encryption, and retained snapshots. `storage` reports the exact native data/cache/profile paths. `key set` and `key change` use hidden prompts. `snapshot list` shows recovery points. Linked host files are external and are neither encrypted nor rolled back by Glyph. See [the storage guide](assets/human/storage.md).
 
-- Close and reopen your terminal
-- Windows: ensure the Python Scripts directory is in your PATH
-- macOS/Linux: ensure `~/.local/bin` is in your PATH
-- Verify installation: `python -m pip show Py-DOS-B1`
+`source edit`, `source build`, `source activate`, and `source rollback` support changing Glyph itself. Source builds run inside the sandbox; the bootstrap launcher selects activated builds and falls back to the bundled runtime in emergency mode after crashes. The filesystem preserves unclean work and opens the last safe snapshot read-only. Build caches and bootable runtime binaries remain outside the encrypted disk. See [source](assets/human/source.md) and [recovery](assets/human/recovery.md).
 
-**Permission errors on Linux/macOS:**
+The browser renders real HTML/CSS/JavaScript with Chromium and sends PNG frames through Kitty's graphics protocol. Mouse, scrolling, forms, tabs, history, reload, and downloads are implemented. This is an alpha viewport and input bridge, with known gaps in desktop-browser features, accessibility, audio, and performance; see [browser details](docs/browser.md).
+
+Read the [human welcome](assets/human/welcome.md), [ricing guide](assets/human/rice.md), [network guide](assets/human/network.md), [agent guide](assets/AGENTS.md), [architecture](docs/architecture.md), and [validation report](docs/validation.md). [Third-party notices](THIRD_PARTY.md) identify the NvChad starter and Zenith catalog sources.
+
 ```bash
-pip install --user Py-DOS-B1
+cargo test --locked --all-targets
+cargo clippy --locked --all-targets -- -D warnings
+cargo fmt --check
 ```
 
----
-
-**Status**: Beta (v1.2)  
-Enjoy your retro experience! Feel like a Boomer! 
+Alpha means real working features with limited platform coverage and validation, not a production security audit. Independent backups still matter. Source and defaults are open under the repository's MIT license.
